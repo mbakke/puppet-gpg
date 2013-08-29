@@ -1,7 +1,7 @@
 Puppet::Type.type(:gpgkey).provide(:gpgme) do
   require 'gpgme'
   def exists?
-    ! GPGME::Key.find(:secret, keyname()).empty?
+    ! GPGME::Key.find(:secret, @resource[:name]).empty?
   end
 
   def self.instances
@@ -13,30 +13,24 @@ Puppet::Type.type(:gpgkey).provide(:gpgme) do
   def create
     ctx = GPGME::Ctx.new
     keydata = "<GnupgKeyParms format=\"internal\">\n"
-    keydata += "Key-Type: "       +@resource.value(:keytype)+"\n"
-    keydata += "Key-Length: "     +@resource.value(:keylength)+"\n"
-    keydata += "Subkey-Type: "    +@resource.value(:subkeytype)+"\n"
-    keydata += "Subkey-Length: "  +@resource.value(:subkeylength)+"\n"
-    keydata += "Name-Real: "      +@resource.value(:name)+"\n"
-    keydata += "Name-Comment: "   +keyname()+"\n"
-    keydata += "Name-Email: "     +@resource.value(:email)+"\n"
-    keydata += "Expire-Date: "    +@resource.value(:expire)+"\n"
-    keydata += "Passphrase: "     +@resource.value(:password)+"\n"
+    keydata += "Key-Type: "       +@resource[:keytype]+"\n"
+    keydata += "Key-Length: "     +@resource[:keylength]+"\n"
+    keydata += "Subkey-Type: "    +@resource[:subkeytype]+"\n"
+    keydata += "Subkey-Length: "  +@resource[:subkeylength]+"\n"
+    keydata += "Name-Real: "      +@resource[:name]+"\n"
+    keydata += "Name-Comment: "   +@resource[:comment]+"\n"
+    keydata += "Name-Email: "     +@resource[:email]+"\n"
+    keydata += "Expire-Date: "    +@resource[:expire]+"\n"
+    keydata += "Passphrase: "     +@resource[:password]+"\n"
     keydata += "</GnupgKeyParms>\n"
 
     ctx.genkey(keydata, nil, nil)
   end
 
   def destroy
-    GPGME::Key.find(:secret, keyname()).each do |key|
+    GPGME::Key.find(:secret, @resource[:name]).each do |key|
       key.delete!(true)
     end
-  end
-
-  private
-  def keyname
-    keyname = 'puppet#' + @resource.value(:name) + '#'
-    return keyname
   end
 
 end

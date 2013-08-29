@@ -6,6 +6,11 @@ Puppet::Type.newtype(:gpgkey) do
       desc 'The name of the GPG key, this will use the Real Name attribute of the key'
     end
 
+    newparam(:comment) do
+      defaultto "Created by puppet: #{Time.now}"
+      desc 'Key comment'
+    end
+
     newparam(:keytype) do
       defaultto 'RSA'
       desc 'GPG Key Type'
