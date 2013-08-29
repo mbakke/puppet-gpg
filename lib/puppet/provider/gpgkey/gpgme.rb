@@ -4,6 +4,12 @@ Puppet::Type.type(:gpgkey).provide(:gpgme) do
     ! GPGME::Key.find(:secret, keyname()).empty?
   end
 
+  def self.instances
+    GPGME::Key.find(:secret).collect do |key|
+      new(:name => key.name)
+    end
+  end
+
   def create
     ctx = GPGME::Ctx.new
     keydata = "<GnupgKeyParms format=\"internal\">\n"
