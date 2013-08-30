@@ -21,7 +21,7 @@ Puppet::Type.type(:gpgkey).provide(:gpgme) do
     keydata += "Name-Comment: "   +@resource[:comment]+"\n"
     keydata += "Name-Email: "     +@resource[:email]+"\n"
     keydata += "Expire-Date: "    +@resource[:expire]+"\n"
-    keydata += "Passphrase: "     +@resource[:password]+"\n"
+    keydata += "Passphrase: "     +@resource[:password]+"\n" unless @resource[:password].empty?
     keydata += "</GnupgKeyParms>\n"
 
     ctx.genkey(keydata, nil, nil)
