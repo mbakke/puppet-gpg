@@ -43,8 +43,4 @@ Puppet::Type.newtype(:gpgkey) do
       defaultto ''
     end
 
-    newparam(:armour) do
-      defaultto true
-    end
-
 end
